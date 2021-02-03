@@ -2,9 +2,12 @@
   <div>
     <coach-card>
       <h2>Requests Received</h2>
-      <div class="list-message" v-if="hasRequests">
-        <div class="box" v-for="request in receivedRequests" :key="request.id">
-          <h4>Day: {{ request.id }}</h4>
+      <coach-loading v-if="loading"></coach-loading>
+      <div
+        class="list-message"
+        v-else-if="requests && requests.length > 0 && !loading"
+      >
+        <div class="box" v-for="request in requests" :key="request.id">
           <a :href="mailTo(request.userEmail)"
             >Email: {{ request.userEmail }}</a
           >
@@ -16,11 +19,23 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
+import CoachLoading from "../../components/common/CoachLoading.vue";
 export default {
+  components: { CoachLoading },
+  data() {
+    return {
+      loading: false,
+    };
+  },
+  created() {
+    this.fetchRequest();
+  },
   computed: {
-    receivedRequests() {
-      return this.$store.getters["requests/requests"];
-    },
+    ...mapState("requests", ["requests"]),
+    // receivedRequests() {
+    //   return this.$store.state["requests/requests"];
+    // },,
     hasRequests() {
       return this.$store.getters["requests/hasRequests"];
     },
@@ -28,6 +43,15 @@ export default {
   methods: {
     mailTo(user) {
       return "mailto:" + user;
+    },
+    async fetchRequest() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch("requests/fetchRequest");
+      } catch (err) {
+        this.error = err.message || "Something failed!";
+      }
+      this.isLoading = false;
     },
   },
 };

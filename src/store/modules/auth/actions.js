@@ -1,52 +1,60 @@
-import firebase from "firebase/app";
-import "firebase/auth";
-import router from "../../../router";
-
+import axios from "axios";
 export default {
-  signUp({ commit }, payload) {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(payload.email, payload.password)
-      .then((user) => {
-        const newUser = {
-          id: user.uid,
-          registeredMeetups: [],
-        };
-        localStorage.setItem("user", newUser);
-        commit("setUser", {
-          newUser,
-        });
-        router.push("/coaches");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  //SIGNUP
+  async signUp({ commit }, payload) {
+    const url =
+      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCqaYP7DBqX6GSKLUxrD4qbcURoXxDhV24";
+
+    const response = await axios.post(url, {
+      email: payload.email,
+      password: payload.password,
+      returnSecureToken: true,
+    });
+
+    if (response.status !== "200") {
+      //error
+    }
+
+    localStorage.setItem("user", response.data.localId);
+    localStorage.setItem("token", response.data.idToken);
+
+    commit("setUser", {
+      user: response.data.localId,
+      token: response.data.idToken,
+    });
   },
 
-  login({ commit }, payload) {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(payload.email, payload.password)
-      .then((user) => {
-        localStorage.setItem("user", user.user.uid);
-        commit("setUser", user.user.uid);
-        router.push("/coaches");
-      })
-      .catch((e) => {
-        console.log("Login failed: ", e);
-      });
+  //LOGIN
+  async login({ commit }, payload) {
+    const url =
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCqaYP7DBqX6GSKLUxrD4qbcURoXxDhV24";
+
+    const response = await axios.post(url, {
+      email: payload.email,
+      password: payload.password,
+      returnSecureToken: true,
+    });
+
+    if (response.status !== "200") {
+      //error
+    }
+
+    localStorage.setItem("user", response.data.localId);
+    localStorage.setItem("token", response.data.idToken);
+
+    commit("setUser", {
+      user: response.data.localId,
+      token: response.data.idToken,
+    });
   },
-  // logout({commit}) {
-  //   firebase
-  //     .auth()
-  //     .signOut()
-  //     .then((user) => {
-  //       localStorage.removeItem('user');
-  //       commit("setUser", user.user.uid)
-  //       router.push("/coaches");
-  //     })
-  //     .catch((e) => {
-  //       console.log("Logout failed: ", e);
-  //     });
-  // },
+
+  logout({ commit }) {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    commit("setUser", {
+      user: null,
+      token: null,
+    });
+  },
 };

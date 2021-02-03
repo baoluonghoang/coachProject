@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from "../store";
+import store from "../store/index";
 
 const routes = [
   { path: "/", redirect: "/coaches" },
@@ -33,15 +33,24 @@ const routes = [
     name: "register",
     component: () =>
       import(
-        /* webpackChunkName: "CoachCreate" */ "../views/auth/CoachCreate.vue"
+        /* webpackChunkName: "CoachCreate" */ "../views/coaches/CoachCreate.vue"
       ),
     meta: { authRequired: true },
+    // beforeEnter: (_, _2, next) => {
+    //   if (!store.state.user) {
+    //     next({
+    //       name: "Auth",
+    //     });
+    //   } else {
+    //     next();
+    //   }
+    // },
   },
   {
-    path: "/login",
-    name: "Login",
+    path: "/auth",
+    name: "Auth",
     component: () =>
-      import(/* webpackChunkName: "Login" */ "../views/auth/Login.vue"),
+      import(/* webpackChunkName: "Auth" */ "../views/auth/Auth.vue"),
   },
   {
     path: "/requests",
@@ -69,22 +78,14 @@ const router = createRouter({
 
 //guard navigation
 router.beforeEach((to, _, next) => {
-  // if (to.matched.some((record) => record.meta.authRequired)) {
-  //   if (!store.state.user) {
-  //     next({
-  //       name: "Login",
-  //       query: { redirect: to.fullPath },
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
-  if (to.meta.authRequired && !store.state.user) {
-    next("/login");
-  } else if (to.meta.authRequired && store.state.user) {
-    next("/coaches");
+  if (to.matched.some((record) => record.meta.authRequired)) {
+    if (!store.state.user && !!store.state.token) {
+      next({
+        name: "Auth",
+      });
+    } else {
+      next();
+    }
   } else {
     next();
   }

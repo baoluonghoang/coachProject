@@ -38,7 +38,7 @@
 <script>
 import CoachCard from "../common/CoachCard.vue";
 export default {
-  emits: ['changeFilter'],
+  emits: ["changeFilter"],
   components: { CoachCard },
   data() {
     return {
@@ -50,16 +50,15 @@ export default {
     };
   },
   methods: {
-    onChange(e) {
-      //lấy ra id và checked của ô checkbox
-      const id = e.target.id;
-      const isActive = e.target.checked;
-      //sau đó update lại data filter khi có thay đổi
+    onChange() {
+      // const id = e.target.id;
+      // const checkActive = e.target.checked;
+      //update filter data
       this.filter = {
+        // [id]: checkActive,
         ...this.filter,
-        [id]: isActive,
       };
-      this.$emit('changeFilter', this.filter);
+      this.$emit("changeFilter", this.filter);
     },
   },
 };

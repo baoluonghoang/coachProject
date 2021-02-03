@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="show" @click="tryClose" class="backdrop"></div>
+    <div v-if="show" @click="closeForm" class="backgroundDialog"></div>
     <transition name="dialog">
       <dialog open v-if="show">
         <header>
@@ -11,9 +11,9 @@
         <section>
           <slot></slot>
         </section>
-        <menu v-if="!fixed">
+        <menu v-if="isChecking">
           <slot name="actions">
-            <coach-button @click="tryClose">Close</coach-button>
+            <coach-button @click="closeForm">Close</coach-button>
           </slot>
         </menu>
       </dialog>
@@ -32,26 +32,26 @@ export default {
       type: String,
       required: false,
     },
-    fixed: {
+    isChecking: {
       type: Boolean,
       required: false,
       default: false,
     },
   },
-  emits: ['close'],
+  emits: ["close"],
   methods: {
-    tryClose() {
+    closeForm() {
       if (this.fixed) {
         return;
       }
-      this.$emit('close');
+      this.$emit("close");
     },
   },
 };
 </script>
 
 <style scoped>
-.backdrop {
+.backgroundDialog {
   position: fixed;
   top: 0;
   left: 0;
@@ -98,6 +98,7 @@ menu {
   margin: 0;
 }
 
+/* transition animation */
 .dialog-enter-from,
 .dialog-leave-to {
   opacity: 0;

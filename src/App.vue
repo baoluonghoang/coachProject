@@ -17,6 +17,9 @@ import TheFooter from "./components/layouts/TheFooter.vue";
 import TheHeader from "./components/layouts/TheHeader.vue";
 export default {
   components: { TheHeader, TheFooter },
+  created() {
+    // this.$store.dispatch("auth/checkLogin");
+  },
 };
 </script>
 <style scoped>
@@ -39,7 +42,7 @@ export default {
 }
 
 /*transition animations*/
-.moveUp-enter-active {
+/*.moveUp-enter-active {
   animation: fadeIn 0.5s ease-in;
 }
 
@@ -66,5 +69,30 @@ export default {
   100% {
     transform: translateY(80px);
   }
+}
+*/
+
+.moveUp-enter-from {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.moveUp-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.moveUp-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.moveUp-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.moveUp-enter-to,
+.moveUp-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

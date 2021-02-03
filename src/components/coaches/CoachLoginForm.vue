@@ -1,10 +1,19 @@
 <template>
-  <coach-dialog :show="!!error" title="An error occurred" @close="handleError">
-    <p>{{ error }}</p>
-  </coach-dialog>
-  <coach-dialog :show="loading" title="Authenticating..." fixed>
+  <!-- First Dialog -->
+  <coach-dialog :show="loading" title="Authenticating...">
     <coach-loading></coach-loading>
   </coach-dialog>
+
+  <!-- Second Dialog -->
+  <coach-dialog
+    :show="!!error"
+    title="An error occurred"
+    @close="closeErrorForm"
+    isChecking
+  >
+    <p>{{ error }}</p>
+  </coach-dialog>
+
   <form @submit.prevent="checkClick == 1 ? onLogin() : onRegister()">
     <div class="input-group">
       <label for="email">E-Mail</label>
@@ -12,7 +21,7 @@
     </div>
     <div class="input-group">
       <label for="password">Password</label>
-      <input type="text" name="password" id="password" v-model="password" />
+      <input type="password" name="password" id="password" v-model="password" />
     </div>
     <p v-if="message">
       Please enter a valid email and password (must be at least 6 characters
@@ -85,8 +94,8 @@ export default {
     onChangeClickTwo() {
       return (this.checkClick = 1);
     },
-    // ...mapMutations(["setCurrentUser"]),
-    async onLogin() {
+
+    validateForm() {
       if (
         this.email === "" ||
         !this.email.includes("@") ||
@@ -95,38 +104,45 @@ export default {
         this.message = true;
         return;
       }
-      setInterval(() => {
-        this.loading = true;
-      }, 10);
-      this.loading = false;
+    },
+    // ...mapMutations(["setCurrentUser"]),
+    async onLogin() {
+      this.validateForm();
+      this.loading = true;
       try {
         await this.$store.dispatch("auth/login", {
           email: this.email,
           password: this.password,
         });
+        if (this.$route.query.redirect === "register") {
+          this.$router.replace("/register");
+        } else {
+          this.$router.replace("/coaches");
+        }
+        const redirectTo = "/" + (this.$route.query.redirect || "coaches");
+        this.$router.replace(redirectTo);
       } catch (err) {
-        this.error =
-          err.message || "Failed to authenticate. Check your login data.";
+        this.error = "Failed to authenticate. Check your login data.";
       }
       this.loading = false;
     },
     async onRegister() {
-      // setInterval(() => {
-      //   this.loading = true;
-      // }, 10);
+      this.validateForm();
+      this.loading = true;
       try {
         await this.$store.dispatch("auth/signUp", {
           email: this.email,
           password: this.password,
         });
-      } catch (error) {
-        this.error = error.message;
+        const redirectTo = "/" + (this.$route.query.redirect || "coaches");
+        this.$router.replace(redirectTo);
+      } catch (err) {
+        this.error = "Failed to authenticate. Check your login data.";
       }
-      this.error = "Failed to authenticate. Check your login data.";
       this.loading = false;
     },
 
-    handleError() {
+    closeErrorForm() {
       this.error = null;
     },
   },

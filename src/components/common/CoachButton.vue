@@ -2,7 +2,11 @@
   <button v-if="!link" :class="background">
     <slot></slot>
   </button>
-  <router-link v-else :to="to" :class="background">
+  <router-link
+    v-else
+    :to="{ path: path, query: { redirect: query } }"
+    :class="background"
+  >
     <slot></slot>
   </router-link>
 </template>
@@ -20,10 +24,14 @@ export default {
       required: false,
       default: false,
     },
-    to: {
+    path: {
       type: String,
       required: false,
       default: "/",
+    },
+    query: {
+      type: String,
+      required: false,
     },
   },
 };

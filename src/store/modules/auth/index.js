@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state: {
     user: localStorage.getItem("user") || null,
+    token: localStorage.getItem("token") || null,
   },
   mutations,
   actions,

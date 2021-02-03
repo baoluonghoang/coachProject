@@ -4,8 +4,8 @@
       <router-link class="logo" to="/coaches">Find a Coach</router-link>
       <div class="menu">
         <router-link to="/coaches">All Coaches</router-link>
-        <template v-if="!user">
-          <router-link to="/login">Login</router-link>
+        <template v-if="!isLogin">
+          <router-link to="/auth">Login</router-link>
         </template>
         <template v-else>
           <router-link to="/requests">
@@ -20,18 +20,19 @@
   </div>
 </template>
 <script>
-import firebase from "firebase/app";
-import { mapGetters, mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "TheHeader",
   computed: {
-    ...mapState("auth", ["user"]),
+    // ...mapState("auth", ["user"]),
+    isLogin() {
+      return this.$store.getters["auth/isLogin"];
+    },
     ...mapGetters("requests", ["requests"]),
   },
   methods: {
     logout() {
-      firebase.auth().signOut();
-      localStorage.removeItem("user");
+      return this.$store.dispatch("auth/logout");
     },
   },
 };

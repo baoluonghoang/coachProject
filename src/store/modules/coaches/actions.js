@@ -2,11 +2,44 @@ import axios from "axios";
 const url = "https://coaches-e0de4-default-rtdb.firebaseio.com/coaches.json";
 
 export default {
+  async registerCoach({ commit, rootGetters }, data) {
+    // const userId = state.coaches.length++;
+    const userId = rootGetters["auth/user"];
+    const coachData = {
+      id: userId,
+      firstName: data.first,
+      lastName: data.last,
+      description: data.des,
+      hourlyRate: data.hour,
+      areas: data.areas,
+    };
+
+    const response = await axios.put(
+      `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${userId}.json`,
+      coachData
+    );
+
+    if (response.status !== "200") {
+      // const error = new Error(response.statusText);
+      // throw error;
+    }
+
+    commit("registerCoaches", {
+      ...coachData,
+      id: userId,
+    });
+  },
+
+  //GET ALL COACHES FROM API
   async fetchCoaches({ commit }) {
     const response = await axios.get(`${url}`);
     const responseData = response.data;
+
+    if (response.status !== "200") {
+      //error
+    }
+
     const coaches = [];
-    //Vì mỗi thằng có mỗi id nên for qua cái keyItem
     for (var keyItem in responseData) {
       const coach = {
         id: keyItem,
@@ -18,6 +51,7 @@ export default {
       };
       coaches.push(coach);
     }
+
     commit("setCoaches", coaches);
   },
 };

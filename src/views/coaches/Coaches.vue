@@ -10,12 +10,27 @@
             Refresh
           </coach-button>
 
-          <coach-button link to="/login?redirect=register" v-if="!user">
+          <coach-button
+            link
+            v-if="!isLogin"
+            :path="'/auth'"
+            :query="'register'"
+          >
             Login to Register as Coach
           </coach-button>
-        </div>
 
-        <div class="list-coaches" v-if="existCoaches">
+          <coach-button
+            v-if="isLogin && !isCoach && !loading"
+            link
+            :path="'/register'"
+          >
+            Register as Coach
+          </coach-button>
+        </div>
+        <div v-if="loading">
+          <coach-loading></coach-loading>
+        </div>
+        <div class="list-coaches" v-else-if="hasCoaches">
           <coach-item
             v-for="coach in filteredCoaches"
             :key="coach.id"
@@ -28,7 +43,7 @@
           </coach-item>
         </div>
         <div v-else>
-          <coach-loading></coach-loading>
+          <h3>No coaches found.</h3>
         </div>
       </coach-card>
     </section>
@@ -38,12 +53,13 @@
 <script>
 import CoachFilter from "../../components/coaches/CoachFilter.vue";
 import CoachItem from "../../components/coaches/CoachItem.vue";
+
 export default {
   components: { CoachFilter, CoachItem },
   data() {
     return {
       loading: false,
-      activeFilter: {
+      coachesFilter: {
         frontend: true,
         backend: true,
         career: true,
@@ -52,21 +68,27 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
+    isLogin() {
+      return this.$store.getters["auth/isLogin"];
     },
-    existCoaches() {
-      return !this.loading && this.$store.getters["coaches/existCoaches"];
+
+    isCoach() {
+      return this.$store.getters["coaches/isCoach"];
+    },
+
+    hasCoaches() {
+      return !this.loading && this.$store.getters["coaches/hasCoaches"];
     },
     filteredCoaches() {
       return this.$store.getters["coaches/allCoaches"].filter((coach) => {
-        if (coach.areas.includes("frontend") && this.activeFilter.frontend) {
+        //check phần tử có tồn tại trong mảng ko
+        if (coach.areas.includes("frontend") && this.coachesFilter.frontend) {
           return true;
         }
-        if (coach.areas.includes("backend") && this.activeFilter.backend) {
+        if (coach.areas.includes("backend") && this.coachesFilter.backend) {
           return true;
         }
-        if (coach.areas.includes("career") && this.activeFilter.career) {
+        if (coach.areas.includes("career") && this.coachesFilter.career) {
           return true;
         }
         return false;
@@ -78,20 +100,18 @@ export default {
   },
   methods: {
     onChangeFilter(data) {
-      //data: nhận được từ this.filter của thằng con CoachFilter
-      this.activeFilter = data;
-      // console.log("data của thằng cha :", this.activeFilter);
+      this.coachesFilter = data;
     },
     async fetchCoaches() {
       this.loading = true;
       try {
-        this.$store.dispatch("coaches/fetchCoaches").then(() => {
+        await this.$store.dispatch("coaches/fetchCoaches").then(() => {
           setTimeout(() => {
             this.loading = false;
           }, 300);
         });
-      } catch (error) {
-        this.error = error.message;
+      } catch (err) {
+        this.error = "Failed to fetch!";
       }
     },
   },
@@ -102,5 +122,8 @@ export default {
 .list-button {
   display: flex;
   justify-content: space-between;
+}
+h3 {
+  text-align: center;
 }
 </style>

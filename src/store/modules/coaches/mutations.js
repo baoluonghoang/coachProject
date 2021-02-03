@@ -1,5 +1,9 @@
 export default {
-  setCoaches: (state, coaches) => {
-    state.coaches = coaches;
+  setCoaches: (state, payload) => {
+    state.coaches = payload;
   },
+
+  registerCoaches: (state, payload) => {
+    state.coaches.push(payload)
+  }
 }

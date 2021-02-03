@@ -6,7 +6,7 @@
         type="text"
         id="firstname"
         v-model.trim="firstName.value"
-        @blur="blurValidate('firstName')"
+        @blur="onBlur('firstName')"
       />
       <p class="error-message" v-if="!firstName.isValid">
         FirstName is required and first character must be toUpperCase
@@ -18,7 +18,7 @@
         type="text"
         id="lastname"
         v-model.trim="lastName.value"
-        @blur="blurValidate('lastName')"
+        @blur="onBlur('lastName')"
       />
       <p class="error-message" v-if="!lastName.isValid">
         LastName is required and more than 3 characters
@@ -30,7 +30,7 @@
         id="description"
         rows="5"
         v-model.trim="description.value"
-        @blur="blurValidate('description')"
+        @blur="onBlur('description')"
       ></textarea>
       <p class="error-message" v-if="!description.isValid">
         Description is required and not more than 100 characters.
@@ -42,7 +42,7 @@
         type="number"
         id="hourlyRate"
         v-model.number="hourlyRate.value"
-        @blur="blurValidate('hourlyRate')"
+        @blur="onBlur('hourlyRate')"
       />
       <p class="error-message" v-if="!hourlyRate.isValid">
         HourlyRate must be a number
@@ -57,7 +57,7 @@
           id="frontend"
           value="frontend"
           v-model="areas.value"
-          @blur="blurValidate('areas')"
+          @blur="onBlur('areas')"
         />
         <label for="frontend">Frontend Development</label>
       </div>
@@ -67,7 +67,7 @@
           id="backend"
           value="backend"
           v-model="areas.value"
-          @blur="blurValidate('areas')"
+          @blur="onBlur('areas')"
         />
         <label for="backend">Backend Development</label>
       </div>
@@ -77,7 +77,7 @@
           id="career"
           value="career"
           v-model="areas.value"
-          @blur="blurValidate('areas')"
+          @blur="onBlur('areas')"
         />
         <label for="career">Career Advisory</label>
       </div>
@@ -117,7 +117,7 @@ export default {
   },
   computed: {},
   methods: {
-    blurValidate(x) {
+    onBlur(x) {
       this[x].isValid = true;
     },
     checkCapitalize(word) {
@@ -153,7 +153,9 @@ export default {
     },
     onRegister() {
       this.validate();
-
+      if (!this.formIsValid) {
+        return;
+      }
       const formData = {
         first: this.firstName.value,
         last: this.lastName.value,
@@ -161,8 +163,7 @@ export default {
         hour: this.hourlyRate.value,
         areas: this.areas.value,
       };
-
-      console.log(formData);
+      this.$emit("register-coach", formData);
     },
   },
 };
