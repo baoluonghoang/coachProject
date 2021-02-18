@@ -4,6 +4,6 @@ export default {
   },
 
   registerCoaches: (state, payload) => {
-    state.coaches.push(payload)
-  }
-}
+    state.coaches.push(payload);
+  },
+};

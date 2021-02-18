@@ -4,9 +4,9 @@ const url = "https://coaches-e0de4-default-rtdb.firebaseio.com/coaches.json";
 export default {
   async registerCoach({ commit, rootGetters }, data) {
     // const userId = state.coaches.length++;
-    const userId = rootGetters["auth/user"];
+    const user = rootGetters["auth/user"];
     const coachData = {
-      id: userId,
+      id: user,
       firstName: data.first,
       lastName: data.last,
       description: data.des,
@@ -15,7 +15,7 @@ export default {
     };
 
     const response = await axios.put(
-      `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${userId}.json`,
+      `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${user}.json`,
       coachData
     );
 
@@ -26,7 +26,7 @@ export default {
 
     commit("registerCoaches", {
       ...coachData,
-      id: userId,
+      id: user,
     });
   },
 
@@ -53,5 +53,12 @@ export default {
     }
 
     commit("setCoaches", coaches);
+  },
+
+  async fetchCoachesDetail({ commit }, payload) {
+    const response = await axios.get(
+      `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${payload}.json`
+    );
+    commit("setCoaches", response.data);
   },
 };

@@ -10,7 +10,6 @@ import store from "./store";
 // import CoachDialog from "./components/common/CoachLoading.vue";
 import firebase from "firebase/app";
 
-//import common for everthing in VUE
 //optimize lady load with asynchronous component ~(tương tự) router
 const CoachDialog = defineAsyncComponent(() =>
   import("./components/common/CoachLoading.vue")
@@ -30,7 +29,8 @@ const CoachLoading = defineAsyncComponent(() =>
 
 router.beforeEach((to, from) => {
   // to and from are both route objects. must call `next`.
-  console.log(from.fullPath);
+  console.log("TO", to.fullPath);
+  console.log("FROM", from.fullPath);
   console.log("good bye");
 });
 

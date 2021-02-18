@@ -55,21 +55,21 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
+  height: 95vh;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
 }
 
 dialog {
   position: fixed;
-  top: 20vh;
-  left: 10%;
-  width: 80%;
+  top: 20%;
+  left: 30%;
+  width: 40%;
   z-index: 100;
-  border-radius: 12px;
+  border-radius: 8px;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   padding: 0;
   margin: 0;
   overflow: hidden;
@@ -117,12 +117,5 @@ menu {
 .dialog-leave-from {
   opacity: 1;
   transform: scale(1);
-}
-
-@media (min-width: 768px) {
-  dialog {
-    left: calc(50% - 20rem);
-    width: 40rem;
-  }
 }
 </style>

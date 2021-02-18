@@ -94,8 +94,8 @@ export default {
     onChangeClickTwo() {
       return (this.checkClick = 1);
     },
-
-    validateForm() {
+    // ...mapMutations(["setCurrentUser"]),
+    async onLogin() {
       if (
         this.email === "" ||
         !this.email.includes("@") ||
@@ -104,10 +104,6 @@ export default {
         this.message = true;
         return;
       }
-    },
-    // ...mapMutations(["setCurrentUser"]),
-    async onLogin() {
-      this.validateForm();
       this.loading = true;
       try {
         await this.$store.dispatch("auth/login", {
@@ -127,7 +123,14 @@ export default {
       this.loading = false;
     },
     async onRegister() {
-      this.validateForm();
+      if (
+        this.email === "" ||
+        !this.email.includes("@") ||
+        this.password.length < 6
+      ) {
+        this.message = true;
+        return;
+      }
       this.loading = true;
       try {
         await this.$store.dispatch("auth/signUp", {

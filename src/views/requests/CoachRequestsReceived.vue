@@ -2,7 +2,7 @@
   <div>
     <coach-card>
       <h2>Requests Received</h2>
-      <coach-loading v-if="loading"></coach-loading>
+        <coach-loading v-if="loading"></coach-loading>
       <div
         class="list-message"
         v-else-if="requests && requests.length > 0 && !loading"
@@ -33,25 +33,19 @@ export default {
   },
   computed: {
     ...mapState("requests", ["requests"]),
-    // receivedRequests() {
-    //   return this.$store.state["requests/requests"];
-    // },,
-    hasRequests() {
-      return this.$store.getters["requests/hasRequests"];
-    },
   },
   methods: {
     mailTo(user) {
       return "mailto:" + user;
     },
     async fetchRequest() {
-      this.isLoading = true;
+      this.loading = true;
       try {
         await this.$store.dispatch("requests/fetchRequest");
       } catch (err) {
-        this.error = err.message || "Something failed!";
+        this.error = "Request failed!";
       }
-      this.isLoading = false;
+      this.loading = false;
     },
   },
 };

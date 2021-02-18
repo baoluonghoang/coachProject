@@ -41,37 +41,6 @@ export default {
   min-height: calc(91vh - 125px);
 }
 
-/*transition animations*/
-/*.moveUp-enter-active {
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.moveUp-leave-active {
-  animation: moveUp 0.4s ease-in;
-}
-
-@keyframes moveUp {
-  0% {
-    transform: translatey(0px);
-  }
-  100% {
-    transform: translateY(80px);
-  }
-}
-*/
-
 .moveUp-enter-from {
   opacity: 0;
   transform: translateY(-30px);

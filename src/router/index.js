@@ -35,22 +35,14 @@ const routes = [
       import(
         /* webpackChunkName: "CoachCreate" */ "../views/coaches/CoachCreate.vue"
       ),
-    meta: { authRequired: true },
-    // beforeEnter: (_, _2, next) => {
-    //   if (!store.state.user) {
-    //     next({
-    //       name: "Auth",
-    //     });
-    //   } else {
-    //     next();
-    //   }
-    // },
+    meta: { requiresAuth: true },
   },
   {
     path: "/auth",
     name: "Auth",
     component: () =>
       import(/* webpackChunkName: "Auth" */ "../views/auth/Auth.vue"),
+    meta: { requiresUnauth: true },
   },
   {
     path: "/requests",
@@ -62,7 +54,7 @@ const routes = [
   },
 
   {
-    path: "/:notFound(.*)",
+    path: "/:NotFound(.*)*",
     name: "PageNotFound",
     component: () =>
       import(
@@ -78,14 +70,21 @@ const router = createRouter({
 
 //guard navigation
 router.beforeEach((to, _, next) => {
-  if (to.matched.some((record) => record.meta.authRequired)) {
-    if (!store.state.user && !!store.state.token) {
-      next({
-        name: "Auth",
-      });
-    } else {
-      next();
-    }
+  // if (to.matched.some((record) => record.meta.authRequired)) {
+  //   if (!store.state.user && !!store.state.token) {
+  //     next({
+  //       name: "Auth",
+  //     });
+  //   } else {
+  //     next();
+  //   }
+  // } else {
+  //   next();
+  // }
+  if (to.meta.requiresAuth && !store.getters["auth/isLogin"]) {
+    next("/auth");
+  } else if (to.meta.requiresUnauth && store.getters["auth/isLogin"]) {
+    next("/coaches");
   } else {
     next();
   }

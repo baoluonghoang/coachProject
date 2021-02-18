@@ -30,7 +30,10 @@
         <div v-if="loading">
           <coach-loading></coach-loading>
         </div>
-        <div class="list-coaches" v-else-if="hasCoaches">
+        <div
+          class="list-coaches"
+          v-else-if="!loading && filteredCoaches && filteredCoaches.length > 0"
+        >
           <coach-item
             v-for="coach in filteredCoaches"
             :key="coach.id"
@@ -73,22 +76,23 @@ export default {
     },
 
     isCoach() {
-      return this.$store.getters["coaches/isCoach"];
+      return this.$store.getters["auth/isCoach"];
     },
 
     hasCoaches() {
       return !this.loading && this.$store.getters["coaches/hasCoaches"];
     },
     filteredCoaches() {
-      return this.$store.getters["coaches/allCoaches"].filter((coach) => {
+      const coaches = this.$store.getters["coaches/allCoaches"];
+      return coaches.filter((coach) => {
         //check phần tử có tồn tại trong mảng ko
-        if (coach.areas.includes("frontend") && this.coachesFilter.frontend) {
+        if (this.coachesFilter.frontend && coach.areas.includes("frontend")) {
           return true;
         }
-        if (coach.areas.includes("backend") && this.coachesFilter.backend) {
+        if (this.coachesFilter.backend && coach.areas.includes("backend")) {
           return true;
         }
-        if (coach.areas.includes("career") && this.coachesFilter.career) {
+        if (this.coachesFilter.career && coach.areas.includes("career")) {
           return true;
         }
         return false;

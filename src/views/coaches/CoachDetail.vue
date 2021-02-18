@@ -2,20 +2,20 @@
   <div>
     <section>
       <coach-card>
-        {{ chooseCoach.firstName }} {{ chooseCoach.lastName }}
-        <h4>${{ chooseCoach.hourlyRate }}/hour</h4>
+        {{ detail.firstName }} {{ detail.lastName }}
+        <h4>${{ detail.hourlyRate }}/hour</h4>
       </coach-card>
 
       <coach-card>
         <h2>Interested? Reach out now!</h2>
         <coach-button link :to="linkToContact"> Contact </coach-button>
-        <!--render ra thằng children trong routes-->
+        <!--render ra thằng children mes trong routes-->
         <router-view :key="$route.path"></router-view>
       </coach-card>
 
       <coach-card>
         <coach-badge
-          v-for="area in chooseCoach.areas"
+          v-for="area in detail.areas"
           :key="area.id"
           :color="area"
           :title="area"
@@ -33,33 +33,33 @@
 import axios from "axios";
 export default {
   name: "CoachesDetail",
-  props: [],
+  props: ["id"],
   data() {
     return {
-      chooseCoach: [],
+      detail: [],
     };
   },
   created() {
-    // this.chooseCoach = this.$store.getters["coaches/allCoaches"].find((x) => {
-    //   return this.id === x.id;
-    // });
     axios
       .get(
-        `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${this.$route.params.id}.json`
+        `https://coaches-e0de4-default-rtdb.firebaseio.com/coaches/${this.id}.json`
       )
       .then((response) => {
-        this.chooseCoach = response.data;
+        this.detail = response.data;
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
       });
+    // this.$store.dispatch("coaches/fetchCoachesDetail", this.id);
   },
   computed: {
     linkToContact() {
-      return this.$route.path + "/" + this.$route.params.id + "/contact";
+      return this.$route.path + "/" + this.id + "/contact";
     },
+    // detail() {
+    //   return this.$store.getters["coaches/allCoaches"];
+    // },
   },
-  //so sánh list trùng với id
 };
 </script>
 

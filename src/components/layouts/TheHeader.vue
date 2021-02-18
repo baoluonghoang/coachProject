@@ -11,10 +11,11 @@
           <router-link to="/requests">
             Requests
           </router-link>
-          <router-link class="logout" to="/" @click="logout"
-            >Logout</router-link
-          >
+          <coach-button class="logout" @click="logout">Logout</coach-button>
         </template>
+      </div>
+      <div class="vuei18n">
+        <select>
       </div>
     </div>
   </div>
@@ -24,7 +25,6 @@ import { mapGetters } from "vuex";
 export default {
   name: "TheHeader",
   computed: {
-    // ...mapState("auth", ["user"]),
     isLogin() {
       return this.$store.getters["auth/isLogin"];
     },

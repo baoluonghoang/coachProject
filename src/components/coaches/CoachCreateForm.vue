@@ -90,6 +90,7 @@
 </template>
 <script>
 export default {
+  emits: ["register-coach"],
   data() {
     return {
       firstName: {
@@ -115,7 +116,6 @@ export default {
       formIsValid: true,
     };
   },
-  computed: {},
   methods: {
     onBlur(x) {
       this[x].isValid = true;
@@ -152,6 +152,7 @@ export default {
       }
     },
     onRegister() {
+      this.formIsValid = true;
       this.validate();
       if (!this.formIsValid) {
         return;

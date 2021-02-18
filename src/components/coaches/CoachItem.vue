@@ -29,10 +29,14 @@ export default {
   props: ["id", "firstName", "lastName", "hourlyRate", "areas"],
   computed: {
     linkToContact() {
-      return this.$route.path + '/' + this.id + '/contact';
+      return this.$route.path + "/" + this.id + "/contact";
     },
     linkToDetail() {
-      return this.$route.path + '/' + this.id;
+      // if (this.$router.params.id != this.id) {
+      //   console.log("hello");
+      //   return;
+      // }
+      return this.$route.path + "/" + this.id;
     },
   },
 };
